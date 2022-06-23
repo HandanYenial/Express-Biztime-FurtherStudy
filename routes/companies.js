@@ -4,6 +4,7 @@ const express = require("express");
 const ExpressError = require("../expressError");
 const router = express.Router();
 const db = require("../db");
+const { default: slugify } = require("slugify");
 
 
 //GET/companies
@@ -38,12 +39,19 @@ router.get("/:code" , async(req,res,next) => {
 //Adds a company.
 //Needs to be given JSON like: {code, name, description}
 //Returns obj of new company: {company: {code, name, description}}
+//It might be difficult for customers to make up a customer code themselves when making new companies 
+//(preferably, they should have no spaces or weird punctuation, and should be all lower-case).
+//Fortunately, there’s an NPM library that can help out, slugify. Read about this, and then change 
+//the POST /companies route so that they don’t provide a code directly, but you make this by using slugify() 
+//on the given name.
 
 router.post("/" , async(req,res,next) => {
     try{
-        //const{ code, name, description } = req.params; can be used also
-        const result = await db.query(`INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description`, [req.body.code, req.body.name , req.body.description]);
-        return res.send({ company: result.rows[0]});
+        let {name, description} = req.body;
+        let code =slugify(name, {lower: true});
+
+        const result = await db.query(`INSERT INTO companies (code, name, description) VALUES ($1, $2, $3) RETURNING code, name, description`, [code, name , description]);
+        return res.status(201).json({ "company": result.rows[0]});
     }catch(e){
         next(e);
     }
