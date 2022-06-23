@@ -28,3 +28,15 @@ INSERT INTO invoices (comp_Code, amt, paid, paid_date)
          ('apple', 200, false, null),
          ('apple', 300, true, '2018-01-01'),
          ('ibm', 400, false, null);
+
+CREATE TABLE industries (
+    id serial PRIMARY KEY,
+    industry_code text NOT NULL,
+    industry text NOT NULL,
+    company_code text NOT NULL REFERENCES companies ON DELETE CASCADE
+    
+);
+
+INSERT INTO industries (industry_code, industry, company_code)
+   VALUES('acct' , 'accounting'      , 'apple'),
+         ('hr'   , 'Human Resources' , 'ibm'  );

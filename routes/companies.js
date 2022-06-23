@@ -21,15 +21,25 @@ router.get("/" , async(req,res,next) => {
 //GET /companies/[code]
 //Return obj of company: {company: {code, name, description}}
 //If the company given cannot be found, this should return a 404 status response.
+//Change this route:
+//when viewing details for a company, you can see the names of the industries for that company
 
 router.get("/:code" , async(req,res,next) => {
     try{
         const { code } = req.params;
-        const results = await db.query(`SELECT * FROM companies WHERE code = $1`, [code]);
+        const results = await db.query(`SELECT industries.id , industries.industry_code, industries.industry, industries.company_code
+                                        FROM industries 
+                                        JOIN companies 
+                                        ON industries.company_code = companies.code 
+                                        WHERE companies.code = $1` , [code]);
         if(results.rows.length === 0){
             throw new ExpressError("Company not found", 404);
         }
-        return res.send({ company: results.rows[0]});
+        const{ id , name } = results.rows[0];
+        ///////didn't get this part
+        const industries = results.rows.map(industry => industry.name);
+        return res.send({ id, code, name , industries});
+        ////////
     }catch(e){
         return next(e);
     }
