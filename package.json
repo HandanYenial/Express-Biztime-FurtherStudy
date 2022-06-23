@@ -1,0 +1,23 @@
+{
+  "name": "express-biztime",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^1.3.3",
+    "pg": "^8.7.3",
+    "slugify": "^1.6.5",
+    "supertest": "^6.2.3"
+  },
+  "devDependencies": {
+    "jest": "^28.1.1"
+  }
+}
